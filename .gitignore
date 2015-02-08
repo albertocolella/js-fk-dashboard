@@ -1,3 +1,8 @@
+!.keep
+node_modules
+build/*
+build/!.keep
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

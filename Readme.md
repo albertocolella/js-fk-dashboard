@@ -1,3 +1,9 @@
-    npm install -g react-tools
+# Dashboard #
 
-    jsx --watch src/ build/
+## install ##
+
+    npm install -g browserify
+    npm install -g watchify
+    npm install
+
+    npm run-script build

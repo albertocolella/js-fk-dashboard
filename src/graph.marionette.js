@@ -1,13 +1,21 @@
+'use strict';
+var $ = require('jquery');
+var Backbone = require('backbone');
+Backbone.$ = $;
+var Marionette = require('backbone.marionette');
 
-var Graph = Backbone.Model.extend({
+var _ = require('underscore');
+var Graph = {};
+
+Graph.Graph = Backbone.Model.extend({
   defaults: {
     id: 0,    
     background: 'red'
   }
 });
 
-var GraphCollection = Backbone.Collection.extend({
-  model: Graph,
+Graph.GraphCollection = Backbone.Collection.extend({
+  model: Graph.Graph,
   current: 0,
   //localStorage: new Backbone.LocalStorage('graphs-backbone'),
   currentGraph: function() {
@@ -27,10 +35,10 @@ var GraphCollection = Backbone.Collection.extend({
   }
 });
 
-var GraphItemView = Marionette.ItemView.extend({
+Graph.GraphItemView = Marionette.ItemView.extend({
     tagname: "div",
     template: _.template('<div style="background-color: <%-background%>;">Graph <%-id%></div>'),
-    model: Graph,
+    model: Graph.Graph,
     onRender: function () {
       console.log('ItemView onrender')
     },
@@ -41,9 +49,9 @@ var GraphItemView = Marionette.ItemView.extend({
 });
 
 
-var GraphListView = Backbone.Marionette.CompositeView.extend({
+Graph.GraphListView = Backbone.Marionette.CompositeView.extend({
     template:  _.template('the graph <%=graph%> <br /><a href="#" class="next">next</a>'),  
-    childView: GraphItemView,
+    childView: Graph.GraphItemView,
     initialize: function( ) {
         this.current = 0;
     },
@@ -55,9 +63,11 @@ var GraphListView = Backbone.Marionette.CompositeView.extend({
     },
     render: function() {
       var self = this;
-      var graph = new GraphItemView({model: this.collection.nextGraph()});
+      var graph = new Graph.GraphItemView({model: this.collection.nextGraph()});
       graph.render();
       this.$el.html(this.template({graph: graph.$el.html()}));
       return this;
     }
 });
+
+module.exports = Graph;
