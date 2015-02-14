@@ -6,4 +6,9 @@
     npm install -g watchify
     npm install
 
+
+## develop ##
+
+Rebuild after every change using:
+
     npm run-script build
