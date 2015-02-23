@@ -12,6 +12,37 @@ Graph.Graph = Backbone.Model.extend({
   defaults: {
     id: 0,    
     background: 'red'
+  },
+  getData: function (){
+    var value_a = (Math.random() * 100) + 1;
+    var value_b = (Math.random() * value_a) + 1;
+    var value_c = 100 - value_a - value_b;
+    return [
+      {
+          value: value_a,
+          color:"#F7464A",
+          highlight: "#FF5A5E",
+          label: "Red"
+      },
+      {
+          value: value_b,
+          color: "#46BFBD",
+          highlight: "#5AD3D1",
+          label: "Green"
+      },
+      {
+          value: value_c,
+          color: "#FDB45C",
+          highlight: "#FFC870",
+          label: "Yellow"
+      }
+    ];
+  },
+  showup: function(){
+    var data = this.getData();
+    var ctx = $("#graph"+this.id).get(0).getContext("2d");
+    $("#graph"+this.id).show();
+    return new Chart(ctx).Doughnut(data, {});
   }
 });
 
@@ -31,7 +62,6 @@ Graph.GraphCollection = Backbone.Collection.extend({
       this.current = 0;
     }
     var res = this.at(this.current);
-    this.prev = this.current
     this.current++;
     return res;
   }
@@ -39,76 +69,81 @@ Graph.GraphCollection = Backbone.Collection.extend({
 
 Graph.GraphItemView = Marionette.ItemView.extend({
     tagname: "div",
-    template: _.template('<canvas id="graph<%-id%>" width="400" height="400"></canvas>'),
+    template: _.template('<canvas id="graph<%-id%>" class="graph" style="display:none;" width="400" height="400"></canvas>'),
     //template: _.template('<div style="background-color: <%-background%>;">Graph <%-id%></div>'),
     model: Graph.Graph,
     onShow: function(){
-      console.log('ItemView onshow');
+      // console.log('ItemView onshow');
     },
     onDomRefresh: function(){
-      console.log('ItemView onDomRefresh');
+      // console.log('ItemView onDomRefresh');
+    },
+    onBeforeRender: function () {
+      // console.log('ItemView onbeforerender');
+      this.id = this.model.get('id'); 
     },
     onRender: function () {
-      console.log('ItemView onrender');      
+      // console.log('ItemView onrender');      
     },
-    getData: function (){
-      return [
-        {
-            value: 300,
-            color:"#F7464A",
-            highlight: "#FF5A5E",
-            label: "Red"
-        },
-        {
-            value: 50,
-            color: "#46BFBD",
-            highlight: "#5AD3D1",
-            label: "Green"
-        },
-        {
-            value: 100,
-            color: "#FDB45C",
-            highlight: "#FFC870",
-            label: "Yellow"
-        }
-      ];
-    },
-    render: function (){
-      console.log('ItemView render');
-      this.$el.html(this.template({id: this.model.get('id'), background: this.model.get('background')})); 
-      return this;
+    initialize: function(){
+      // console.log('ItemView initialize');
     }
 });
 
 
 Graph.GraphListView = Backbone.Marionette.CompositeView.extend({
-    template:  _.template('the graph <%=graph%> <br /><a href="#" class="next">next</a>'),  
+    template:  _.template('<header class="graph-collection">the graph <%=id%></header>'+
+                          '<div></div>'+
+                          '<footer><a href="#" class="next">next</a></footer>'), 
+    templateHelpers: function(){
+        var modelIndex = this.collection.current;
+        return {
+            id: modelIndex
+        }
+    }, 
     childView: Graph.GraphItemView,
+    childViewContainer: 'div',
     initialize: function( ) {
-        this.current = 0;
-        this.prev = 0;
+      this.collection.current = 0;
+      this.graphs = {};
     },
     events: {
-      "click .next" : "render"
+      "click .next" : "next"
+    },
+    onBeforeRender: function () {
+      // console.log('ListView onbeforerender');
     },
     onRender: function () {
-      console.log('ListView onrender');      
+      // console.log('ListView onrender');
+      // console.debug(this.collection.current);
+      // console.debug(this.collection['_byId'][this.collection.current]);
     },
     onShow: function(){
-      console.log('ListView onshow');
-      var data = this.childView.getData();
-      var ctx = $("#graph"+this.collection.current).get(0).getContext("2d");
-      var myPieChart = new Chart(ctx).Doughnut(data, {});
+      // console.log('ListView onshow');
+      var nextgraph = this.collection.nextGraph();
+      $('.graph').hide();
+      var rendered = nextgraph.showup();
+      var id = nextgraph.get('id');
+      this.graphs[id] = rendered;
+      $('.graph-collection').html('the graph '+id);
     },
     onDomRefresh: function(){
-      console.log('ListView onDomRefresh');
+      // console.log('ListView onDomRefresh');
     },
-    render: function() {
-      var self = this;
-      this.childView = new Graph.GraphItemView({model: this.collection.nextGraph()});
-      this.childView.render();
-      this.$el.html(this.template({graph: this.childView.$el.html()}));
-      return this;
+    next: function() {
+      // console.log('ListView next');
+      var nextgraph = this.collection.nextGraph();
+      $('.graph').hide();
+      _.each (this.graphs, function(value, key, list){
+        value.destroy();
+      });
+      var rendered = nextgraph.showup();
+      var id = nextgraph.get('id');
+      this.graphs[id] = rendered;
+      $('.graph-collection').html('the graph '+id);
+    },
+    appendHtml: function(collectionView, itemView){
+      // console.log('ListView appendHtml');
     }
 });
 

@@ -4,12 +4,34 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 Backbone.$ = $;
 var Marionette = require('backbone.marionette');
+var _ = require('underscore');
 
+var AppLayout = Backbone.Marionette.LayoutView.extend({
+ // template: _.template('<div id="content">vvvvv</div>'),
+  template: '#layout-view-template',
+  onShow: function(){
+    // console.log('LayoutView onshow');
+  },
+  onDomRefresh: function(){
+    // console.log('LayoutView onDomRefresh');
+  },
+  onBeforeRender: function () {
+    // console.log('LayoutView onbeforerender');
+  },
+  onRender: function () {
+    // console.log('LayoutView onrender');      
+  },
+  regions: {
+    content: "#content"
+  }
+});
+
+var layout = new AppLayout();
 
 var App = new Backbone.Marionette.Application();
 
 App.addRegions({
-  mainRegion: '#content'
+  mainRegion: '#wrapper'
 });
 
 App.on("start", function(){
@@ -23,7 +45,13 @@ App.on("start", function(){
     collection: graphs
   });
 
-  App.mainRegion.show(graphList);/**/
+  App.getRegion('mainRegion').show(layout);
+  //App.mainRegion.show(layout);
+
+  layout.getRegion('content').show(graphList);
+
+
+  /*App.mainRegion.show(graphList);/**/
 });
 
 // App.start();
