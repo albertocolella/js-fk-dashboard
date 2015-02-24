@@ -7,7 +7,6 @@ var Marionette = require('backbone.marionette');
 var _ = require('underscore');
 
 var AppLayout = Backbone.Marionette.LayoutView.extend({
- // template: _.template('<div id="content">vvvvv</div>'),
   template: '#layout-view-template',
   onShow: function(){
     // console.log('LayoutView onshow');
@@ -40,19 +39,13 @@ App.on("start", function(){
     { id: 2, background: "yellow" },
     { id: 3, background: "blue" }
   ]);
-  //var graph = new Graph.Graph();
   var graphList = new Graph.GraphListView({
     collection: graphs
   });
 
   App.getRegion('mainRegion').show(layout);
-  //App.mainRegion.show(layout);
-
   layout.getRegion('content').show(graphList);
 
-
-  /*App.mainRegion.show(graphList);/**/
 });
 
-// App.start();
 module.exports = App;
