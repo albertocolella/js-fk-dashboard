@@ -34,17 +34,28 @@ App.addRegions({
 });
 
 App.on("start", function(){
-  var graphs = new Graph.GraphCollection([
-    { id: 1, background: "green" },
-    { id: 2, background: "yellow" },
-    { id: 3, background: "blue" }
-  ]);
-  var graphList = new Graph.GraphListView({
-    collection: graphs
+  var graphs = new Graph.GraphCollection(null, {user_id:1});
+  var deferred = $.Deferred();
+  $.when(
+    graphs.fetch({
+      dataType: "json",
+      success: function(data) {
+        return deferred.resolve();
+      },
+      error: function(collection, response, options) {
+        console.log('error', collection);
+        console.log('error', response);
+        console.log('error', options);
+        return deferred.fail();
+      }
+    })
+  ).then(function(){
+    var graphList = new Graph.GraphListView({
+      collection: graphs
+    });
+    App.getRegion('mainRegion').show(layout);
+    layout.getRegion('content').show(graphList);
   });
-
-  App.getRegion('mainRegion').show(layout);
-  layout.getRegion('content').show(graphList);
 
 });
 
