@@ -91,7 +91,7 @@ Graph.GraphItemView = Marionette.ItemView.extend({
 Graph.GraphListView = Backbone.Marionette.CompositeView.extend({
     template:  _.template('<header class="graph-collection">the graph <%=id%></header>'+
                           '<div></div>'+
-                          '<footer><a href="" class="next">next</a></footer>'), 
+                          '<footer><button type="button" class="btn btn-lg btn-primary next">Next</button></footer>'), 
     templateHelpers: function(){
         var modelIndex = this.collection.current;
         return {
