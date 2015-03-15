@@ -65,8 +65,8 @@ Graph.GraphCollection = Backbone.Collection.extend({
 });
 
 Graph.GraphItemView = Marionette.ItemView.extend({
-    tagname: "div",
-    template: _.template('<canvas id="graph<%-id%>" class="graph" style="display:none;" width="400" height="400"></canvas>'),
+    tagName: "div",
+    template: _.template('<canvas id="graph<%-id%>" class="graph" style="display:none;" width="200" height="200"></canvas>'),
     //template: _.template('<div style="background-color: <%-background%>;">Graph <%-id%></div>'),
     model: Graph.Graph,
     onShow: function(){

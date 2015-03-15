@@ -5,13 +5,27 @@
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap-theme.css">
   </head>
   <body>
-    <div id="wrapper">
+    <nav class="navbar navbar-default" role="navigation">
+   <div class="navbar-header">
+      <ul class="nav navbar-nav">
+         <li class="dropdown">
+            <a href="#" class="dropdown-toggle glyphicon glyphicon-menu-hamburger" data-toggle="dropdown"></a>
+            <ul class="dropdown-menu">
+               <li><a href="#">new form</a></li>
+               <li><a href="#">dummy link</a></li>
+               <li class="divider"></li>
+               <li><a href="#">dummy link</a></li>
+            </ul>
+         </li>
+      </ul>
+      <a class="navbar-brand" href="#">Feedbacks</a>
+   </div>
+</nav>
+    <div id="wrapper" class="container">
     
     <script id="layout-view-template" type="text/template">
-      <section>
-        <header id="menu">...</header>
-        <div id="content">...</div>
-      </section>
+        <div class="row row-1">...</div>
+        <div class="row row-2">...</div>
     </script>
     </div>
     <script src="./build/build.js"></script>

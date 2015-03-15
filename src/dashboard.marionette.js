@@ -1,5 +1,6 @@
 'use strict';
 var Graph = require('./graph.marionette.js');
+var Form = require('./form.marionette.js');
 var $ = require('jquery');
 var Backbone = require('backbone');
 Backbone.$ = $;
@@ -21,7 +22,8 @@ var AppLayout = Backbone.Marionette.LayoutView.extend({
     // console.log('LayoutView onrender');      
   },
   regions: {
-    content: "#content"
+    firstRow: ".row-1",
+    secondRow: ".row-2"
   }
 });
 
@@ -34,6 +36,7 @@ App.addRegions({
 });
 
 App.on("start", function(){
+  var forms = new Form.FormCollection(null, {user_id:1});
   var graphs = new Graph.GraphCollection(null, {user_id:1});
   var deferred = $.Deferred();
   $.when(
@@ -43,9 +46,17 @@ App.on("start", function(){
         return deferred.resolve();
       },
       error: function(collection, response, options) {
-        console.log('error', collection);
-        console.log('error', response);
-        console.log('error', options);
+        console.error('Graph error', response.responseText);
+        return deferred.fail();
+      }
+    }),
+    forms.fetch({
+      dataType: "json",
+      success: function(data) {
+        return deferred.resolve();
+      },
+      error: function(collection, response, options) {
+        console.error('Form error', response.responseText);
         return deferred.fail();
       }
     })
@@ -53,8 +64,12 @@ App.on("start", function(){
     var graphList = new Graph.GraphListView({
       collection: graphs
     });
+    var formList = new Form.FormListView({
+      collection: forms
+    });
     App.getRegion('mainRegion').show(layout);
-    layout.getRegion('content').show(graphList);
+    layout.getRegion('firstRow').show(formList);
+    layout.getRegion('secondRow').show(graphList);
   });
 
 });
