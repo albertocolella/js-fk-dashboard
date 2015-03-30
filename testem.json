@@ -1,0 +1,26 @@
+{
+  "framework": "mocha",
+  "src_files": [
+    "node_modules/chai/chai.js",
+    "lib/*",
+    "test/*.spec.js"
+  ],
+  "launchers": {
+    "node": {
+      "command": "mocha -r test/setup.js -R tap test/*.spec.js",
+      "protocol": "tap"
+    },
+    "phantomjs": {
+      "command": "mocha -r test/setup.js -R tap test/*.phantom.js",
+      "protocol": "tap"
+    }
+  },
+  "serve_files": [
+    "build/build.js"
+  ],
+  "before_tests": "browserify app.js -o build/build.js",
+  "launch_in_dev": [
+    "node",
+    "phantomjs"
+  ]
+}
