@@ -18,7 +18,8 @@
     "testem": "~0.7.6",
     "mocha": "~2.2.1",
     "phantomjs": "~1.9.16",
-    "mocha-phantomjs": "~3.5.3"
+    "mocha-phantomjs": "~3.5.3",
+    "karma": "~0.12.31"
   },
   "repository": {
     "type": "git",

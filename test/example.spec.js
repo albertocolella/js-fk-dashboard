@@ -1,4 +1,4 @@
-describe('TDD example testing', function () {
+describe('BDD example testing', function () {
   it('should bar', function () {
     // This test will only run in Node.
     expect(3).to.not.equal('three');

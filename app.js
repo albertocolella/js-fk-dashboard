@@ -28,6 +28,10 @@ App.getCurrentRoute = function(){
  return Backbone.history.fragment
 };
 
+App.getApiUrl = function(){
+  return 'http://localhost:8080';
+};
+
 App.addRegions({
   mainRegion: '#wrapper'
 });

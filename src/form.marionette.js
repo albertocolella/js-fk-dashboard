@@ -10,7 +10,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       fields: []
     },
     url: function() {
-      return 'api/1/forms/'+this.id+'.json';
+      console.log('URL:', App.getApiUrl());
+      return App.getApiUrl() + '/api/v1/forms/'+this.id; //+'.json';
     },
     initialize: function() {
       //this.deferred = this.fetch();
@@ -26,7 +27,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
     current: 0,
     url: function() {
       // console.log('user_id:', this.user_id);
-      return 'api/1/forms.json';
+      return App.getApiUrl() + '/api/v1/forms'; //.json';
     },
     initialize: function(){
 
