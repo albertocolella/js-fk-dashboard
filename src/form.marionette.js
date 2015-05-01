@@ -5,17 +5,21 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
   Form.Form = Backbone.Model.extend({
     defaults: {
       id: 0,
-      site: '',
-      path: '',    
-      fields: []
+      url: 'default',    
+      data: {
+        fields: []
+      }
     },
     url: function() {
       console.log('URL:', App.getApiUrl());
-      return App.getApiUrl() + '/api/v1/forms/'+this.id; //+'.json';
+      return App.getApiUrl() + '/forms/'+this.id; //+'.json';
     },
     initialize: function() {
       //this.deferred = this.fetch();
-      this.cart = {};
+      /*this.bind("reset", function (model, options) {
+        console.log("Inside event");
+        console.log(model);
+      });*/
     },
     getData: function (){
       return this.get('data');
@@ -27,10 +31,13 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
     current: 0,
     url: function() {
       // console.log('user_id:', this.user_id);
-      return App.getApiUrl() + '/api/v1/forms'; //.json';
+      return App.getApiUrl() + '/forms'; //.json';
+    },    
+    parse : function(response, options){
+       return response.forms;
     },
     initialize: function(){
-
+      
     }
     //localStorage: new Backbone.LocalStorage('forms-backbone'),
   });
@@ -64,7 +71,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         // console.log('ItemView initialize');
       },
       getFormData: function(el){
-        // console.log('ItemView initialize');
+        // console.log('ItemView initialize', el);
         JSON.stringify(el);
       },
       formClose: function(){
@@ -92,16 +99,17 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         if (this.model.get("show")){
           return _.template('<form>' + 
                             '<div class="input-group">' + 
-                            '<span class="input-group-addon" id="sizing-addon2">path</span>' +
-                            '<input type="text" value="<%= site%>" name="site"/>' +
-                            '<span class="input-group-addon" id="sizing-addon2">name</span>' +
-                            '<input type="text" value="<%= path%>" name="path"/>' +                          
+                            '<span class="input-group-addon" id="sizing-addon2">url</span>' +
+                            '<input type="text" value="<%= url%>" name="url"/>' +
+                            // '<span class="input-group-addon" id="sizing-addon2">name</span>' +
+                            // '<input type="text" value="<%= name%>" name="name"/>' +                          
                             '<button type="button" value="<%-id%>" class="btn btn-success glyphicon glyphicon-ok form-save" />' +
                             '<button type="button" value="<%-id%>" class="btn btn-danger glyphicon glyphicon-remove form-close" />' +
                             '</div>' +
                             '</form>');
         } else {
-          return _.template('<td><a href="" id="form-link-<%-id%>" class="form-link"><%-path%></a></td>' + 
+          // console.log(this.model);
+          return _.template('<td><a href="" id="form-link-<%-id%>" class="form-link"><%-url%></a></td>' + 
                            '<td><div class="btn-group" role="group">' + 
                            '<button type="button" value="<%-id%>" class="btn btn-default glyphicon glyphicon-pencil form-edit" />' + 
                            '</div></td>');
@@ -176,21 +184,21 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
   Form.FormView = Marionette.ItemView.extend({
       //tagName: "tr",
       template: _.template('<form>' + 
+                            // '<div class="input-group">' + 
+                            // '<span class="input-group-addon" id="sizing-addon2">site</span>' +
+                            // '<input type="text" value="" name="site"/>' +
+                            // '</div>' +
                             '<div class="input-group">' + 
-                            '<span class="input-group-addon" id="sizing-addon2">path</span>' +
-                            '<input type="text" value="" name="site"/>' +
-                            '</div>' +
-                            '<div class="input-group">' + 
-                            '<span class="input-group-addon" id="sizing-addon2">name</span>' +
-                            '<input type="text" value="" name="path"/>' +                          
+                            '<span class="input-group-addon" id="sizing-addon2">url</span>' +
+                            '<input type="text" value="" name="url"/>' +                          
                             '</div>' +
                             '<button type="button" value="" class="btn btn-success glyphicon glyphicon-ok form-save" />' +
                             '<button type="button" value="" class="btn btn-danger glyphicon glyphicon-remove form-close" />' +
                             '</form>'),
      // model: Form.Form,
       ui: {
-        'site': 'input[name=site]',
-        'path': 'input[name=path]',
+        // 'site': 'input[name=site]',
+        'url': 'input[name=url]',
         'close': '.form-close',
         'save': '.form-save'
       },
@@ -213,8 +221,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       getFormData: function(el){
         // console.log('ItemView initialize');
         return {
-          site: this.ui.site.get(0).value,
-          path: this.ui.path.get(0).value,
+          // site: this.ui.site.get(0).value,
+          url: this.ui.url.get(0).value,
           id: 5
         };
       }

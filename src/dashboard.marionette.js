@@ -1,16 +1,14 @@
 'use strict';
-/*var Graph = require('./graph.marionette.js');
-var Form = require('./form.marionette.js');*/
 
 module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
   Dashboard.Controller = Marionette.Controller.extend({
     home: function() {
       console.log('home');
       var forms = new App.Form.Collection(null, {user_id:1});
-      var graphs = new App.Graph.Collection(null, {user_id:1});
+      //var graphs = new App.Graph.Collection(null, {user_id:1});
       var deferred = $.Deferred();
       $.when(
-        graphs.fetch({
+        /*graphs.fetch({
           dataType: "json",
           success: function(data) {
             return deferred.resolve();
@@ -19,10 +17,11 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
             console.error('Graph error', response.responseText);
             return deferred.fail();
           }
-        }),
+        }),*/
         forms.fetch({
           dataType: "json",
           success: function(data) {
+            // console.log('fetched:', data);
             return deferred.resolve();
           },
           error: function(collection, response, options) {
@@ -31,16 +30,16 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
           }
         })
       ).then(function(){
-        var graphList = new App.Graph.ListView({
+        /*var graphList = new App.Graph.ListView({
           collection: graphs
-        });
+        });*/
         var formList = new App.Form.ListView({
           collection: forms
         });
         var layout = new Dashboard.Layout();
         App.getRegion('mainRegion').show(layout);
         layout.getRegion('firstRow').show(formList);
-        layout.getRegion('secondRow').show(graphList);
+        //layout.getRegion('secondRow').show(graphList);
       });
     },
     addForm: function() {
@@ -92,6 +91,3 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
   });
 
 };
-
-
-//module.exports = App;

@@ -29,7 +29,8 @@ App.getCurrentRoute = function(){
 };
 
 App.getApiUrl = function(){
-  return 'http://localhost:8080';
+  return 'http://fk.patrizio.me/api';
+  // return 'http://localhost:8080/api/v1';
 };
 
 App.addRegions({

@@ -12,7 +12,7 @@ module.exports = function (Graph, App, Backbone, Marionette, $, _) {
     },
     url: function() {
       console.log('URL:', App.getApiUrl());
-      return App.getApiUrl() + '/api/v1/graphs/'+this.id; //+'.json';
+      return App.getApiUrl() + '/graphs/'+this.id; //+'.json';
     },
     initialize: function() {
       this.deferred = this.fetch();
@@ -41,7 +41,7 @@ module.exports = function (Graph, App, Backbone, Marionette, $, _) {
     current: 0,
     url: function() {
       // console.log('user_id:', this.user_id);
-      return App.getApiUrl() + '/api/v1/graphs'; //.json';
+      return App.getApiUrl() + '/graphs'; //.json';
     },
     //localStorage: new Backbone.LocalStorage('graphs-backbone'),
     currentGraph: function() {
