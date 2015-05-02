@@ -14,12 +14,21 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       console.log('URL:', App.getApiUrl());
       return App.getApiUrl() + '/forms/'+this.id; //+'.json';
     },
-    initialize: function() {
-      //this.deferred = this.fetch();
-      /*this.bind("reset", function (model, options) {
-        console.log("Inside event");
-        console.log(model);
-      });*/
+    /*initialize: function(id) {
+      console.log('initialize:', id);
+    },*/
+    parse : function(response, options){
+      console.log('parse:', response);
+      if(response.form && response.form.length){
+        if(typeof response.form[0].data == "string"){
+          response.form[0].data = JSON.parse(response.form[0].data);
+        }
+        if(!_.isArray(response.form[0].data.fields)){
+          response.form[0].data.fields = [response.form[0].data.fields];
+        }
+        return response.form[0];
+      };
+      return response;
     },
     getData: function (){
       return this.get('data');
@@ -82,7 +91,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       formEdit: function(){
         console.log('ItemView formEdit');
         this.model.set("show", true);
-        this.render();
+        App.navigate("form/"+this.model.get("id"));
+        //this.render();
       },
       formSave: function(aaa, bbb){
         console.log('ItemView formSave');
@@ -181,21 +191,23 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
     return formView;
   };
 
-  Form.FormView = Marionette.ItemView.extend({
+ /* Form.FormView = Marionette.ItemView.extend({
       //tagName: "tr",
       template: _.template('<form>' + 
-                            // '<div class="input-group">' + 
-                            // '<span class="input-group-addon" id="sizing-addon2">site</span>' +
-                            // '<input type="text" value="" name="site"/>' +
-                            // '</div>' +
                             '<div class="input-group">' + 
                             '<span class="input-group-addon" id="sizing-addon2">url</span>' +
-                            '<input type="text" value="" name="url"/>' +                          
+                            '<input type="text" value="<%= url%>" name="url"/>' +                          
                             '</div>' +
+                            '<%= fields %>' +
                             '<button type="button" value="" class="btn btn-success glyphicon glyphicon-ok form-save" />' +
                             '<button type="button" value="" class="btn btn-danger glyphicon glyphicon-remove form-close" />' +
                             '</form>'),
-     // model: Form.Form,
+      templateHelpers: function(){
+        return {
+            fields: this.renderFormFields()
+        }
+      },
+      model: Form.Form,
       ui: {
         // 'site': 'input[name=site]',
         'url': 'input[name=url]',
@@ -225,8 +237,135 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
           url: this.ui.url.get(0).value,
           id: 5
         };
+      },
+      renderFormFields: function(){
+        console.log('renderFormFields:', this.model.get('data'))
+        var data = this.model.get('data');
+        var output = '';
+        if(data){
+          for(var i=0; i<data.fields.length; i++){
+            var f = data.fields[i];
+            switch(f.type){
+              case 'textarea':
+                output += '<div class="form-group">' +
+                            '<textarea class="form-control" rows="3">' +
+
+                            '</textarea>' +
+                          '</div>';
+
+              break;
+            }
+          }
+        }
+        return output;
+      }
+  });*/
+
+  Form.Edit = {};
+  Form.Edit.Field = {};
+  Form.Edit.Field.View = Marionette.ItemView.extend({
+      //el: ".form-wrapper",
+      template: _.template('<div class="form-group"><%= field%></div>'),
+      templateHelpers: function(){
+        return {
+            field: this.renderFormFields()
+        }
+      },
+      initialize: function(aaa ) {
+        // console.log('ItemView initialize', aaa);
+      },
+      renderFormFields: function(){
+        var output = '';
+        var index = this.options.index;
+        var type = this.model.get('type');
+        var id_raw = this.model.get('id');
+        var id = id_raw.replace(" ", "_");
+        var label =  this.model.get('label');
+        var checked = this.model.get('required')? 'checked="checked"' : '';
+        switch(type){
+          case 'textarea':
+            output += '<label for="' + id +'-label" class="col-sm-2">' + type +'</label>' +  
+                      '<div class="input-group">' +
+                        '<input type="hidden" name="fields[][id]" value="'+id_raw+'" />' +
+                        '<input type="hidden" name="fields[][type]" value="'+type+'" />' +
+                        '<div class="input-group-addon">label</div>' +           
+                        '<input type="text" class="form-control col-sm-2" id="' + id +'-label" name="fields[][label]" value="'+label+'" />' +
+                      '</div>' +
+                      '<div class="col-sm-4">' +
+                        '<div class="checkbox">' +
+                          '<label>' +
+                            '<input type="checkbox" id="' + id +'-required" value="required" ' + checked +'  name="fields[][required]" />required' +
+                          '</label>' +
+                        '</div>' +
+                      '</div>';
+                      
+          break;
+        }
+        return output;
       }
   });
+
+  Form.Edit.View = Backbone.Marionette.CompositeView.extend({
+      tagName: 'form',
+      template:  _.template('<div class="col-md-6 form-group fields-area">' + 
+                            //'<input type="hidden" name="id" value="<%-id%>" />' +
+                            '</div>' +
+                            '<div class="col-md-6 form-group">' +
+                              '<div class="input-group col-sm-10">' +
+                                '<div class="input-group-addon">URL</div>' +  
+                                '<input type="text" name="url" value="<%-url%>" class="form-control" />' +
+                              '</div>' +  
+                              '<div class="clearfix visible-xs-block"></div>' +                        
+                              '<button type="button" value="" class="btn btn-success glyphicon glyphicon-ok form-save" />' +
+                              '<button type="button" value="" class="btn btn-danger glyphicon glyphicon-remove form-close" />' +
+                            '</div>'
+      ),
+      childView: Form.Edit.Field.View,
+      childViewContainer: '.fields-area',
+      childViewOptions: function(model) {
+          return {
+            index: this.collection.indexOf(model)
+          };
+      },
+      initialize: function() {
+        this.collection = new Backbone.Collection(this.model.get('data').fields);
+      },
+      events: {
+        "click .form-close" : "formClose",
+        "click .form-save": "formSave"
+      },
+      formClose: function(){
+        App.navigate('home');
+      },
+      formSave: function(){
+        var data = this.$el.serializeJSON();
+        if(data.fields){
+          data.data = {};
+          data.data.fields = data.fields;
+          delete data.fields;
+        }
+        this.model.set(data);
+        this.model.save(); 
+        App.navigate('home');
+      }
+  });  
+
+  Form.Edit.Layout = Backbone.Marionette.LayoutView.extend({
+    template: _.template( '<form>' +
+                          '</form>'
+    ),
+    initialize: function (form) {
+      this.listenTo(this.model,'sync',this.showSuccess);      
+    },
+    showSuccess: function(){
+      this.firstCol.show(new Form.Edit.View({model: this.model}));
+      //this.firstCol.show(new Form.Edit.View({collection: new Backbone.Collection(this.model.get('data').fields)}));
+    },
+    regions: {
+      firstCol: "form"
+    }
+  });
+  
 
 };
 // module.exports = TheForm;

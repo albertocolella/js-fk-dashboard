@@ -1,7 +1,7 @@
 {
   "name": "Dashboard",
   "scripts": {
-    "build": "browserify app.js -o build/build.js",
+    "build": "browserify app.js -o build/bundle.js  -p [ parcelify -o build/bundle.css ]",
     "test": "testem"
   },
   "dependencies": {
@@ -10,7 +10,8 @@
     "backbone.marionette": "^2.3.2",
     "backbone": "^1.1.2",
     "chart.js": "~1.0.1",
-    "bootstrap": "~3.3.2"
+    "bootstrap": "~3.3.2",
+    "jquery-serializejson": "~2.5.0"
   },
   "devDependencies": {
     "browserify": "^8.1.3",
@@ -21,6 +22,12 @@
     "mocha-phantomjs": "~3.5.3",
     "karma": "~0.12.31"
   },
+  "browser": {
+    "x-editable": "./vendors/bootstrap3-editable/js/bootstrap-editable.js"
+  },
+  "style": [
+    "./vendors/bootstrap3-editable/css/bootstrap-editable.css"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kongoji6/js-fk-dashboard.git"

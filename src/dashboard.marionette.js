@@ -3,7 +3,6 @@
 module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
   Dashboard.Controller = Marionette.Controller.extend({
     home: function() {
-      console.log('home');
       var forms = new App.Form.Collection(null, {user_id:1});
       //var graphs = new App.Graph.Collection(null, {user_id:1});
       var deferred = $.Deferred();
@@ -47,9 +46,23 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
       var new_form = new App.Form.FormView()
       App.getRegion('mainRegion').show(new_form);
     },
-    editForm: function() {
-      console.log('form/edit');
-      form_controller = new App.Form.Controller()
+    editForm: function(form_id) {
+      console.log('form/edit', form_id);
+      var new_form = new App.Form.Form({id:form_id});
+      new_form.fetch({
+        dataType: "json",
+        success: function(data) {
+          /*var form_view = new App.Form.FormView({model: data});
+          App.getRegion('mainRegion').show(form_view);*/
+          var lt = new App.Form.Edit.Layout({model: data});
+          App.getRegion('mainRegion').show(lt);
+        },
+        error: function(collection, response, options) {
+          console.error('Form error', response.responseText);
+          return "Error";
+        }
+      });
+
     }
   });
 

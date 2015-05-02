@@ -1,11 +1,14 @@
 // Vendors
-var $ = require('jquery');
+var $ = global.jQuery = require("jquery")
+//var $ = require('jquery');
+require('bootstrap');
+require('jquery-serializejson');
+require('x-editable');
 var Backbone = require('backbone');
 Backbone.$ = $;
 var Marionette = require('backbone.marionette');
 Marionette.$ = Backbone.$;
 window.jQuery = $;
-require('bootstrap');
 var _ = require('underscore');
 var Dashboard = require('./src/dashboard.marionette.js');
 var Form = require('./src/form.marionette.js');
@@ -32,6 +35,23 @@ App.getApiUrl = function(){
   return 'http://fk.patrizio.me/api';
   // return 'http://localhost:8080/api/v1';
 };
+
+App.serializeForm = function(form){
+  var o = {};
+  var a = form.serializeArray();
+  $.each(a, function() {
+    if (o[this.name]) {
+      if (!o[this.name].push) {
+        o[this.name] = [o[this.name]];
+      }
+      o[this.name].push(this.value || '');
+    } else {
+      o[this.name] = this.value || '';
+    }
+   });
+   return o;
+};
+
 
 App.addRegions({
   mainRegion: '#wrapper'
