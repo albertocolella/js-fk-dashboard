@@ -1,7 +1,8 @@
 // Vendors
 var $ = global.jQuery = require("jquery")
-require('bootstrap');
 require('jquery-serializejson');
+require('bootstrap');
+require('bootstrap-switch');
 var Backbone = require('backbone');
 Backbone.$ = $;
 var Marionette = require('backbone.marionette');

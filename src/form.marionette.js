@@ -271,8 +271,9 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
             field: this.renderFormFields()
         }
       },
-      initialize: function(aaa ) {
-        // console.log('ItemView initialize', aaa);
+      onShow: function(){
+        // this.$el.find('.editable').editable();
+        this.$el.find("[type='checkbox']").bootstrapSwitch();
       },
       renderFormFields: function(){
         var output = '';
@@ -300,7 +301,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
                         '</div>' +
                           '<div class="checkbox col-sm-4"">' +
                             '<label>' +
-                              '<input type="checkbox" id="' + id +'-required" value="required" ' + checked +'  name="fields[][required]" />required' +
+                              '<input type="checkbox" id="' + id +'-required" data-on-text="Required" data-off-text="Not required" data-size="small" value="required" ' + checked +'  name="fields[][required]" />' +
                             '</label>' +
                         '</div>';                                    
           break;
@@ -359,10 +360,11 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       },
       formFieldAdd: function(){
         this.collection.add({id: App.createId(), type: 'text'});
-      },
+      }/*,
       onShow: function(){
         // this.$el.find('.editable').editable();
-      }
+        this.$el.find("[type='checkbox']").bootstrapSwitch();
+      }*/
   });  
 
   Form.Edit.Layout = Backbone.Marionette.LayoutView.extend({

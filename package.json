@@ -11,7 +11,8 @@
     "backbone": "^1.1.2",
     "chart.js": "~1.0.1",
     "bootstrap": "~3.3.2",
-    "jquery-serializejson": "~2.5.0"
+    "jquery-serializejson": "~2.5.0",
+    "bootstrap-switch": "~3.3.2"
   },
   "devDependencies": {
     "browserify": "^8.1.3",
@@ -27,6 +28,7 @@
   },
   "style": [
     "./vendors/bootstrap3-editable/css/bootstrap-editable.css",
+    "./node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css",
     "./css/style.css"
   ],
   "repository": {
