@@ -4,8 +4,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
 
   Form.Form = Backbone.Model.extend({
     defaults: {
-      id: 0,
-      url: 'default',    
+      id: App.createId(),
+      url: '',    
       data: {
         fields: []
       }
@@ -265,7 +265,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
   Form.Edit.Field = {};
   Form.Edit.Field.View = Marionette.ItemView.extend({
       //el: ".form-wrapper",
-      template: _.template('<div class="form-group"><%= field%></div>'),
+      template: _.template('<div class="row form-field-group"><%= field%></div>'),
       templateHelpers: function(){
         return {
             field: this.renderFormFields()
@@ -283,22 +283,26 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         var label =  this.model.get('label');
         var checked = this.model.get('required')? 'checked="checked"' : '';
         switch(type){
+          case 'text':
           case 'textarea':
-            output += '<label for="' + id +'-label" class="col-sm-2">' + type +'</label>' +  
-                      '<div class="input-group">' +
-                        '<input type="hidden" name="fields[][id]" value="'+id_raw+'" />' +
-                        '<input type="hidden" name="fields[][type]" value="'+type+'" />' +
-                        '<div class="input-group-addon">label</div>' +           
-                        '<input type="text" class="form-control col-sm-2" id="' + id +'-label" name="fields[][label]" value="'+label+'" />' +
-                      '</div>' +
-                      '<div class="col-sm-4">' +
-                        '<div class="checkbox">' +
-                          '<label>' +
-                            '<input type="checkbox" id="' + id +'-required" value="required" ' + checked +'  name="fields[][required]" />required' +
-                          '</label>' +
+            output +=   '<h4 class="col-sm-12">' + type +'</h4>' +  
+                        '<div class="form-group col-sm-8">' +
+                          '<input type="hidden" name="fields[][id]" value="'+id_raw+'" />' +
+                          '<input type="hidden" name="fields[][type]" value="'+type+'" />' +
+                          //'<label class="">label: ' + 
+                          // '<span data-type="textarea" class="editable" id="' + id +'-label">'+label+'</span>' +
+                          //'</label>' +  
+                          '<div class="input-group">' +
+                            '<div class="input-group-addon">label </div>' +
+                            '<input type="text" data-type="text" class="editable form-control col-sm-10" id="' + id +'-label" name="fields[][label]" value="'+label+'" />' +
+                          '</div>' +  
+
                         '</div>' +
-                      '</div>';
-                      
+                          '<div class="checkbox col-sm-4"">' +
+                            '<label>' +
+                              '<input type="checkbox" id="' + id +'-required" value="required" ' + checked +'  name="fields[][required]" />required' +
+                            '</label>' +
+                        '</div>';                                    
           break;
         }
         return output;
@@ -306,11 +310,15 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
   });
 
   Form.Edit.View = Backbone.Marionette.CompositeView.extend({
-      tagName: 'form',
-      template:  _.template('<div class="col-md-6 form-group fields-area">' + 
+      //tagName: 'form',
+      template:  _.template('<div>' + 
+                              '<button type="button" value="" class="btn btn-success glyphicon glyphicon-plus form-field-add" />' +
+                            '</div>' +
+                            '<div class="clearfix visible-xs-block"></div>' +
+                            '<div class="col-md-8 form-group fields-area">' + 
                             //'<input type="hidden" name="id" value="<%-id%>" />' +
                             '</div>' +
-                            '<div class="col-md-6 form-group">' +
+                            '<div class="col-md-4 form-group">' +
                               '<div class="input-group col-sm-10">' +
                                 '<div class="input-group-addon">URL</div>' +  
                                 '<input type="text" name="url" value="<%-url%>" class="form-control" />' +
@@ -331,6 +339,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         this.collection = new Backbone.Collection(this.model.get('data').fields);
       },
       events: {
+        "click .form-field-add" : "formFieldAdd",
         "click .form-close" : "formClose",
         "click .form-save": "formSave"
       },
@@ -338,7 +347,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         App.navigate('home');
       },
       formSave: function(){
-        var data = this.$el.serializeJSON();
+        var data = this.$el.parent().serializeJSON();
         if(data.fields){
           data.data = {};
           data.data.fields = data.fields;
@@ -346,7 +355,13 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         }
         this.model.set(data);
         this.model.save(); 
-        App.navigate('home');
+       // App.navigate('home');
+      },
+      formFieldAdd: function(){
+        this.collection.add({id: App.createId(), type: 'text'});
+      },
+      onShow: function(){
+        // this.$el.find('.editable').editable();
       }
   });  
 
@@ -355,7 +370,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
                           '</form>'
     ),
     initialize: function (form) {
-      this.listenTo(this.model,'sync',this.showSuccess);      
+      this.listenTo(this.model,'sync',this.showSuccess);
+      // $.fn.editable.defaults.mode = 'inline';   
     },
     showSuccess: function(){
       this.firstCol.show(new Form.Edit.View({model: this.model}));

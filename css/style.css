@@ -1,0 +1,10 @@
+.form-field-group {
+    background-color: #fff;
+    border-color: #ddd;
+    border-radius: 4px 4px 0 0;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: none;
+    margin-left: 0;
+    margin-right: 0;
+}

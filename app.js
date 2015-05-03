@@ -1,15 +1,14 @@
 // Vendors
 var $ = global.jQuery = require("jquery")
-//var $ = require('jquery');
 require('bootstrap');
 require('jquery-serializejson');
-require('x-editable');
 var Backbone = require('backbone');
 Backbone.$ = $;
 var Marionette = require('backbone.marionette');
 Marionette.$ = Backbone.$;
 window.jQuery = $;
 var _ = require('underscore');
+require('x-editable');
 var Dashboard = require('./src/dashboard.marionette.js');
 var Form = require('./src/form.marionette.js');
 var Graph = require('./src/graph.marionette.js');
@@ -50,6 +49,11 @@ App.serializeForm = function(form){
     }
    });
    return o;
+};
+
+App.createId = function(){
+  var o = new ObjectId();
+  return o.toString();
 };
 
 

@@ -26,7 +26,8 @@
     "x-editable": "./vendors/bootstrap3-editable/js/bootstrap-editable.js"
   },
   "style": [
-    "./vendors/bootstrap3-editable/css/bootstrap-editable.css"
+    "./vendors/bootstrap3-editable/css/bootstrap-editable.css",
+    "./css/style.css"
   ],
   "repository": {
     "type": "git",
