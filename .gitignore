@@ -1,6 +1,7 @@
 !.keep
 node_modules
-build/*
+build/*.js
+build/*.css
 build/!.keep
 
 # Windows image file caches

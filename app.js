@@ -22,8 +22,8 @@ var TheApp = Backbone.Marionette.Application.extend({});
 
 var App = new TheApp();
 
-App.navigate = function(route, options = {trigger: true}){
-  options || (options = {});
+App.navigate = function(route, options){
+  options || (options = {trigger: true});
   Backbone.history.navigate(route, options);
 };
 
