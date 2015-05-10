@@ -43,7 +43,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       return App.getApiUrl() + '/forms'; //.json';
     },    
     parse : function(response, options){
-       return response.forms;
+      console.log('parse:', response);
+      return response.forms;
     },
     initialize: function(){
       

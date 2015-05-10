@@ -12,6 +12,7 @@ var _ = require('underscore');
 require('x-editable');
 var Dashboard = require('./src/dashboard.marionette.js');
 var Form = require('./src/form.marionette.js');
+var Feedback = require('./src/feedback.marionette.js');
 var Graph = require('./src/graph.marionette.js');
 
 
@@ -32,7 +33,7 @@ App.getCurrentRoute = function(){
 };
 
 App.getApiUrl = function(){
-  return 'http://fk.patrizio.me/api';
+  return 'https://fk.patrizio.me/api';
   // return 'http://localhost:8080/api/v1';
 };
 
@@ -65,6 +66,7 @@ App.addRegions({
 
 // App modules
 App.module('Form', Form);
+App.module('Feedback', Feedback);
 App.module('Graph', Graph);
 App.module('Dashboard', Dashboard);
 

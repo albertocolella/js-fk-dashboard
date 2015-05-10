@@ -4,6 +4,7 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
   Dashboard.Controller = Marionette.Controller.extend({
     home: function() {
       var forms = new App.Form.Collection(null, {user_id:1});
+      var feedbacks = new App.Feedback.Collection(null, {user_id:1});
       //var graphs = new App.Graph.Collection(null, {user_id:1});
       var deferred = $.Deferred();
       $.when(
@@ -17,6 +18,17 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
             return deferred.fail();
           }
         }),*/
+        feedbacks.fetch({
+          dataType: "json",
+          success: function(data) {
+            // console.log('fetched:', data);
+            return deferred.resolve();
+          },
+          error: function(collection, response, options) {
+            console.error('Feedback error', response.responseText);
+            return deferred.fail();
+          }
+        }),
         forms.fetch({
           dataType: "json",
           success: function(data) {
@@ -24,7 +36,7 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
             return deferred.resolve();
           },
           error: function(collection, response, options) {
-            console.error('Form error', response.responseText);
+            console.error('Form error', response.status+': '+response.statusText);
             return deferred.fail();
           }
         })
@@ -32,12 +44,21 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
         /*var graphList = new App.Graph.ListView({
           collection: graphs
         });*/
-        var formList = new App.Form.ListView({
-          collection: forms
+      
+        if(forms.length){
+          var formList = new App.Form.ListView({
+            collection: forms
+          });
+        }
+        var feedbackList = new App.Feedback.ListView({
+          collection: feedbacks
         });
         var layout = new Dashboard.Layout();
         App.getRegion('mainRegion').show(layout);
-        layout.getRegion('firstRow').show(formList);
+        if(formList){
+          layout.getRegion('firstRow').show(formList);
+        }
+        layout.getRegion('secondRow').show(feedbackList);
         //layout.getRegion('secondRow').show(graphList);
       });
     },

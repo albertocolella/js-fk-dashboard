@@ -1,0 +1,35 @@
+{
+  "feedbacks": [
+    {
+      "id": 1,
+      "url": "http://www.abc.def",
+      "data": {"test": "123"},
+      "created": 1234565,
+      "ip": "0.0.0.0"
+    },
+    {
+      "id": 1,
+      "url": "http://www.abc.def",
+      "data": {"test": "123"},
+      "created": 1234565,
+      "ip": "0.0.1.0"
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "<string>"
+    },
+    "next": {
+      "href": "<string>"
+    },
+    "prev": {
+      "href": "<string>"
+    },
+    "first": {
+      "href": "<string>"
+    },
+    "last": {
+      "href": "<string>"
+    }
+  }
+}
