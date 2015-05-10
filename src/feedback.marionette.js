@@ -30,8 +30,14 @@ module.exports = function (Feedback, App, Backbone, Marionette, $, _) {
       tagName: "tr",
       template: _.template('<td><%-url%></td>' +
                            '<td><%-data%></td>' +
-                           '<td><%-created%></td>'),
-      model: Feedback.Feedback
+                           '<td><%-created_at%></td>'),
+      model: Feedback.Feedback,
+      templateHelpers: function(){
+        var cad = new Date(this.model.get('created')*1000);
+        return {
+            created_at: cad.toISOString().substr(0,10)
+        }
+      },
   });
 
   Feedback.ListView = Backbone.Marionette.CompositeView.extend({

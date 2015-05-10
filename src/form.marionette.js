@@ -61,10 +61,11 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       model: Form.Form,
       events: {
         "click .form-edit" : "formEdit",
-        "click .form-close" : "formClose",
-        "click .form-save": "formSave"
+        "click .form-link" : "formFeedbacks"
+       // "click .form-close" : "formClose",
+       // "click .form-save": "formSave"
       },
-      onShow: function(){
+      /*onShow: function(){
         // console.log('ItemView onshow');
       },
       onDomRefresh: function(){
@@ -88,26 +89,29 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         console.log('ItemView formClose');
         this.model.set("show", false);
         this.render();
+      },*/
+      formFeedbacks: function(e){
+        e.preventDefault();
+        console.log('ItemView formFeedbacks');
+        App.navigate("form/"+this.model.get("id")+"/feedbacks");
       },
       formEdit: function(){
         console.log('ItemView formEdit');
-        this.model.set("show", true);
+        //this.model.set("show", true);
         App.navigate("form/"+this.model.get("id"));
         //this.render();
       },
-      formSave: function(aaa, bbb){
+      /*formSave: function(aaa, bbb){
         console.log('ItemView formSave');
         this.model.set("show", false);
         var data = this.getFormData(this.$el.find('form'));
         console.log('DATA:', data);
         this.model.set(data);
-        this.model.save(); 
-        /*var form_data = this.getFormData( this.$el.find('form') );
-        this.model.save(form_data);*/
+        this.model.save();
         this.render();
-      },
+      },*/
       getTemplate: function(){
-        if (this.model.get("show")){
+       /* if (this.model.get("show")){
           return _.template('<form>' + 
                             '<div class="input-group">' + 
                             '<span class="input-group-addon" id="sizing-addon2">url</span>' +
@@ -118,13 +122,13 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
                             '<button type="button" value="<%-id%>" class="btn btn-danger glyphicon glyphicon-remove form-close" />' +
                             '</div>' +
                             '</form>');
-        } else {
+        } else {*/
           // console.log(this.model);
           return _.template('<td><a href="" id="form-link-<%-id%>" class="form-link"><%-url%></a></td>' + 
                            '<td><div class="btn-group" role="group">' + 
                            '<button type="button" value="<%-id%>" class="btn btn-default glyphicon glyphicon-pencil form-edit" />' + 
                            '</div></td>');
-        }
+        /*}*/
       }/*,
       serializeData : function() {
           return {

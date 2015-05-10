@@ -4,7 +4,6 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
   Dashboard.Controller = Marionette.Controller.extend({
     home: function() {
       var forms = new App.Form.Collection(null, {user_id:1});
-      var feedbacks = new App.Feedback.Collection(null, {user_id:1});
       //var graphs = new App.Graph.Collection(null, {user_id:1});
       var deferred = $.Deferred();
       $.when(
@@ -17,18 +16,7 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
             console.error('Graph error', response.responseText);
             return deferred.fail();
           }
-        }),*/
-        feedbacks.fetch({
-          dataType: "json",
-          success: function(data) {
-            // console.log('fetched:', data);
-            return deferred.resolve();
-          },
-          error: function(collection, response, options) {
-            console.error('Feedback error', response.responseText);
-            return deferred.fail();
-          }
-        }),
+        }),*/        
         forms.fetch({
           dataType: "json",
           success: function(data) {
@@ -43,22 +31,17 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
       ).then(function(){
         /*var graphList = new App.Graph.ListView({
           collection: graphs
-        });*/
-      
+        });*/      
         if(forms.length){
           var formList = new App.Form.ListView({
             collection: forms
           });
-        }
-        var feedbackList = new App.Feedback.ListView({
-          collection: feedbacks
-        });
+        }        
         var layout = new Dashboard.Layout();
         App.getRegion('mainRegion').show(layout);
         if(formList){
           layout.getRegion('firstRow').show(formList);
-        }
-        layout.getRegion('secondRow').show(feedbackList);
+        }        
         //layout.getRegion('secondRow').show(graphList);
       });
     },
@@ -83,7 +66,23 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
           return "Error";
         }
       });
-
+    },
+    viewFeedbacks: function(form_id){
+      console.log('form/:id/feedbacks', form_id);      
+      var feedbacks = new App.Feedback.Collection(null, {user_id:1});
+      feedbacks.fetch({
+        dataType: "json",
+        success: function(data) {
+          var feedbackList = new App.Feedback.ListView({
+            collection: feedbacks
+          });
+          App.getRegion('mainRegion').show(feedbackList);
+        },
+        error: function(collection, response, options) {
+          console.error('Feedback error', response.responseText);
+          return "Error";
+        }
+      })
     }
   });
 
@@ -92,13 +91,18 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
     appRoutes: {
       "home": "home",
       "form/add": "addForm",
-      "form/:id": "editForm"
+      "form/:id": "editForm",
+      "form/:id/feedbacks": "viewFeedbacks"
     }
   });
 
   Dashboard.Layout = Backbone.Marionette.LayoutView.extend({
     template: '#layout-view-template',
     onShow: function(){
+      $('.navbar-brand').click(function(e){
+        e.preventDefault();
+        App.navigate("home");
+      });
       // console.log('LayoutView onshow');
     },
     onDomRefresh: function(){
