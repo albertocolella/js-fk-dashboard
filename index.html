@@ -8,21 +8,24 @@
   </head>
   <body>
     <nav class="navbar navbar-default" role="navigation">
-   <div class="navbar-header">
-      <ul class="nav navbar-nav">
-         <li class="dropdown">
-            <a href="#" class="dropdown-toggle glyphicon glyphicon-menu-hamburger" data-toggle="dropdown"></a>
-            <ul class="dropdown-menu">
-               <li><a href="#form/add">new form</a></li>
-               <li><a href="#">dummy link</a></li>
-               <li class="divider"></li>
-               <li><a href="#">dummy link</a></li>
-            </ul>
-         </li>
+      <div class="navbar-header">
+        <ul class="nav navbar-nav">
+           <li class="dropdown">
+              <a href="#" class="dropdown-toggle glyphicon glyphicon-menu-hamburger" data-toggle="sidebar-nav"></a>            
+           </li>
+        </ul>
+        <a class="navbar-brand" href="#home">Feedbacks</a>
+      </div>
+    </nav>
+    <nav data-offset-top="120" class="sidebar sidebar-nav" role="navigation">
+      <ul class="nav nav-pills nav-stacked">
+         <li><a href="#form/add">new form</a></li>
+         <li><a href="#">dummy link</a></li>
+         <li class="divider"></li>
+         <li><a href="#">dummy link</a></li>
       </ul>
-      <a class="navbar-brand" href="#">Feedbacks</a>
-   </div>
-</nav>
+    </nav>
+ 
     <div id="wrapper" class="container">
     
     <script id="layout-view-template" type="text/template">

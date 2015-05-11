@@ -8,3 +8,28 @@
     margin-left: 0;
     margin-right: 0;
 }
+
+.sidebar-nav {
+  position: absolute;
+  -webkit-transition: all .25s ease-out;
+       -o-transition: all .25s ease-out;
+          transition: all .25s ease-out;
+  width:0px;
+  overflow: hidden;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  outline: 0 none;
+  top: 52px;
+  bottom: 0;
+  left: 0;
+}
+.sidebar-nav.active { 
+  width: 200px;
+}
+#wrapper {
+  -webkit-transition: padding-left .25s ease-out;
+       -o-transition: padding-left .25s ease-out;
+          transition: padding-left .25s ease-out;
+}
+#wrapper.sidebar-nav-open{
+  padding-left:200px;
+}

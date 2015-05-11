@@ -103,7 +103,12 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
         e.preventDefault();
         App.navigate("home");
       });
-      // console.log('LayoutView onshow');
+      $('[data-toggle=sidebar-nav]').click(function(e) {
+        e.preventDefault();
+        $('.sidebar-nav').toggleClass('active', 1000);
+        $('#wrapper').toggleClass('sidebar-nav-open', 1000);
+      });
+        // console.log('LayoutView onshow');
     },
     onDomRefresh: function(){
       // console.log('LayoutView onDomRefresh');

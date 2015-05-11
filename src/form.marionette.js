@@ -5,10 +5,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
   Form.Form = Backbone.Model.extend({
     defaults: {
       id: App.createId(),
-      url: '',    
-      data: {
-        fields: []
-      }
+      url: '',
+      fields: []
     },
     url: function() {
       console.log('URL:', App.getApiUrl());
@@ -19,14 +17,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
     },*/
     parse : function(response, options){
       console.log('parse:', response);
-      if(response.form && response.form.length){
-        if(typeof response.form[0].data == "string"){
-          response.form[0].data = JSON.parse(response.form[0].data);
-        }
-        if(!_.isArray(response.form[0].data.fields)){
-          response.form[0].data.fields = [response.form[0].data.fields];
-        }
-        return response.form[0];
+      if(response.form){
+        return response.form;
       };
       return response;
     },
@@ -54,42 +46,17 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
 
   Form.ItemView = Marionette.ItemView.extend({
       tagName: "tr",
-     /* template: _.template('<td><a href="" id="form-link-<%-id%>" class="form-link"><%-path%></a></td>' + 
-                           '<td><div class="btn-group" role="group">' + 
-                           '<button type="button" value="<%-id%>" class="btn btn-default glyphicon glyphicon-pencil form-edit" />' + 
-                           '</div></td>'),*/
+      template: _.template('<td><a href="" id="form-link-<%-id%>" class="form-link"><%-url%></a></td>' + 
+                           '<td>'+
+                             '<div class="btn-group" role="group">' + 
+                              '<button type="button" value="<%-id%>" class="btn btn-default glyphicon glyphicon-pencil form-edit" />' + 
+                             '</div>' +
+                            '</td>'),
       model: Form.Form,
       events: {
         "click .form-edit" : "formEdit",
         "click .form-link" : "formFeedbacks"
-       // "click .form-close" : "formClose",
-       // "click .form-save": "formSave"
       },
-      /*onShow: function(){
-        // console.log('ItemView onshow');
-      },
-      onDomRefresh: function(){
-        // console.log('ItemView onDomRefresh');
-      },
-      onBeforeRender: function () {
-        // console.log('ItemView onbeforerender');
-        // this.id = this.model.get('id');
-      },
-      onRender: function () {
-        // console.log('ItemView onrender');
-      },
-      initialize: function(){
-        // console.log('ItemView initialize');
-      },
-      getFormData: function(el){
-        // console.log('ItemView initialize', el);
-        JSON.stringify(el);
-      },
-      formClose: function(){
-        console.log('ItemView formClose');
-        this.model.set("show", false);
-        this.render();
-      },*/
       formFeedbacks: function(e){
         e.preventDefault();
         console.log('ItemView formFeedbacks');
@@ -100,51 +67,22 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
         //this.model.set("show", true);
         App.navigate("form/"+this.model.get("id"));
         //this.render();
-      },
-      /*formSave: function(aaa, bbb){
-        console.log('ItemView formSave');
-        this.model.set("show", false);
-        var data = this.getFormData(this.$el.find('form'));
-        console.log('DATA:', data);
-        this.model.set(data);
-        this.model.save();
-        this.render();
-      },*/
-      getTemplate: function(){
-       /* if (this.model.get("show")){
-          return _.template('<form>' + 
-                            '<div class="input-group">' + 
-                            '<span class="input-group-addon" id="sizing-addon2">url</span>' +
-                            '<input type="text" value="<%= url%>" name="url"/>' +
-                            // '<span class="input-group-addon" id="sizing-addon2">name</span>' +
-                            // '<input type="text" value="<%= name%>" name="name"/>' +                          
-                            '<button type="button" value="<%-id%>" class="btn btn-success glyphicon glyphicon-ok form-save" />' +
-                            '<button type="button" value="<%-id%>" class="btn btn-danger glyphicon glyphicon-remove form-close" />' +
-                            '</div>' +
-                            '</form>');
-        } else {*/
-          // console.log(this.model);
-          return _.template('<td><a href="" id="form-link-<%-id%>" class="form-link"><%-url%></a></td>' + 
-                           '<td><div class="btn-group" role="group">' + 
-                           '<button type="button" value="<%-id%>" class="btn btn-default glyphicon glyphicon-pencil form-edit" />' + 
-                           '</div></td>');
-        /*}*/
-      }/*,
-      serializeData : function() {
-          return {
-              'path': this.model.get('path'),
-              'site': this.model.get('site'),
-              'id': this.model.get('id')
-          };
-      }*/
+      }
   });
 
 
   Form.ListView = Backbone.Marionette.CompositeView.extend({
-      template:  _.template('<table data-toggle="table" class="table table-striped table-bordered table-hover">' + 
-                            '<thead><tr><th>Name</th><th>Actions</th></tr></thead>' +
-                            '<tbody></tbody>' +
-                            '</table>'
+      template:  _.template('<div class="panel panel-default">' +
+                              '<div class="panel-heading">Forms' +
+                              '</div>' +
+                              '<div class="panel-body">' +
+                              '<span class="glyphicon glyphicon-question-sign"></span> Your forms are listed here below.' +
+                              '</div>' +
+                              '<table data-toggle="table" class="table table-striped table-bordered table-hover">' + 
+                              '<thead><tr><th>Name</th><th>Actions</th></tr></thead>' +
+                              '<tbody></tbody>' +
+                              '</table>' +                              
+                            '</div>'
       ), 
       /*templateHelpers: function(){
           var modelIndex = this.collection.current;
@@ -342,7 +280,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
           };
       },
       initialize: function() {
-        this.collection = new Backbone.Collection(this.model.get('data').fields);
+        this.collection = new Backbone.Collection(this.model.get('fields'));
       },
       events: {
         "click .form-field-add" : "formFieldAdd",
