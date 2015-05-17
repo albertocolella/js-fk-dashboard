@@ -32,11 +32,11 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
         /*var graphList = new App.Graph.ListView({
           collection: graphs
         });*/      
-        if(forms.length){
+        // if(forms.length){
           var formList = new App.Form.ListView({
             collection: forms
           });
-        }        
+        // }  
         var layout = new Dashboard.Layout();
         App.getRegion('mainRegion').show(layout);
         if(formList){
@@ -47,8 +47,9 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
     },
     addForm: function() {
       console.log('form/add');
-      var new_form = new App.Form.FormView()
-      App.getRegion('mainRegion').show(new_form);
+      var new_form = new App.Form.Form();
+      var lt = new App.Form.Edit.Layout({model: new_form});
+      App.getRegion('mainRegion').show(lt);
     },
     editForm: function(form_id) {
       console.log('form/edit', form_id);
@@ -83,6 +84,9 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
           return "Error";
         }
       })
+    },
+    initialize: function(){
+      Dashboard.attachCustomBehaviors();
     }
   });
 
@@ -97,17 +101,9 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
   });
 
   Dashboard.Layout = Backbone.Marionette.LayoutView.extend({
-    template: '#layout-view-template',
-    onShow: function(){
-      $('.navbar-brand').click(function(e){
-        e.preventDefault();
-        App.navigate("home");
-      });
-      $('[data-toggle=sidebar-nav]').click(function(e) {
-        e.preventDefault();
-        $('.sidebar-nav').toggleClass('active', 1000);
-        $('#wrapper').toggleClass('sidebar-nav-open', 1000);
-      });
+    //template: '#layout-view-template',
+    template: _.template('<div class="row row-1"></div><div class="row row-2"></div>'),
+    onShow: function(){      
         // console.log('LayoutView onshow');
     },
     onDomRefresh: function(){
@@ -125,6 +121,17 @@ module.exports = function (Dashboard, App, Backbone, Marionette, $, _) {
     }
   });
 
+  Dashboard.attachCustomBehaviors = function(){
+    $('.navbar-brand').click(function(e){
+      e.preventDefault();
+      App.navigate("home");
+    });
+    $('[data-toggle=sidebar-nav]').click(function(e) {
+      e.preventDefault();
+      $('.sidebar-nav').toggleClass('active', 1000);
+      $('#wrapper').toggleClass('sidebar-nav-open', 1000);
+    });
+  };
 
   App.on('start', function () {
     var controller = new Dashboard.Controller();

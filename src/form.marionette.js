@@ -12,11 +12,8 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       console.log('URL:', App.getApiUrl());
       return App.getApiUrl() + '/forms/'+this.id; //+'.json';
     },
-    /*initialize: function(id) {
-      console.log('initialize:', id);
-    },*/
     parse : function(response, options){
-      console.log('parse:', response);
+      // console.log('parse:', response);
       if(response.form){
         return response.form;
       };
@@ -35,7 +32,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       return App.getApiUrl() + '/forms'; //.json';
     },    
     parse : function(response, options){
-      console.log('parse:', response);
+      // console.log('parse:', response);
       return response.forms;
     },
     initialize: function(){
@@ -59,17 +56,17 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       },
       formFeedbacks: function(e){
         e.preventDefault();
-        console.log('ItemView formFeedbacks');
         App.navigate("form/"+this.model.get("id")+"/feedbacks");
       },
-      formEdit: function(){
-        console.log('ItemView formEdit');
-        //this.model.set("show", true);
+      formEdit: function(e){
+        e.preventDefault();
         App.navigate("form/"+this.model.get("id"));
-        //this.render();
       }
   });
 
+  Form.EmptyTableView = Marionette.ItemView.extend({
+    template:  _.template('<tr><td colspan="2">No forms created yet. You can <a href="#forms/add">add a new form</a> now.</td></tr>')
+  });
 
   Form.ListView = Backbone.Marionette.CompositeView.extend({
       template:  _.template('<div class="panel panel-default">' +
@@ -92,6 +89,7 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       }, */
       childView: Form.ItemView,
       childViewContainer: 'tbody',
+      emptyView: Form.EmptyTableView,
       initialize: function( ) {
         // console.log('ListView initialize');
       },
@@ -133,76 +131,6 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
     });
     return formView;
   };
-
- /* Form.FormView = Marionette.ItemView.extend({
-      //tagName: "tr",
-      template: _.template('<form>' + 
-                            '<div class="input-group">' + 
-                            '<span class="input-group-addon" id="sizing-addon2">url</span>' +
-                            '<input type="text" value="<%= url%>" name="url"/>' +                          
-                            '</div>' +
-                            '<%= fields %>' +
-                            '<button type="button" value="" class="btn btn-success glyphicon glyphicon-ok form-save" />' +
-                            '<button type="button" value="" class="btn btn-danger glyphicon glyphicon-remove form-close" />' +
-                            '</form>'),
-      templateHelpers: function(){
-        return {
-            fields: this.renderFormFields()
-        }
-      },
-      model: Form.Form,
-      ui: {
-        // 'site': 'input[name=site]',
-        'url': 'input[name=url]',
-        'close': '.form-close',
-        'save': '.form-save'
-      },
-      events: {
-        "click .form-close" : "formClose",
-        "click .form-save": "formSave"
-      },
-      formClose: function(){
-        console.log('ItemView formClose');
-        App.navigate("home");
-      },
-      formSave: function(aaa, bbb){
-        console.log('ItemView formSave');
-        var data = this.getFormData(this.$el.find('form'));
-        this.model = new App.Form.Form(data);
-        this.model.save(); 
-        App.navigate("home");
-        // App.router.navigate('#tasks/' + this.model.get('id'), {trigger: true})
-      },
-      getFormData: function(el){
-        // console.log('ItemView initialize');
-        return {
-          // site: this.ui.site.get(0).value,
-          url: this.ui.url.get(0).value,
-          id: 5
-        };
-      },
-      renderFormFields: function(){
-        console.log('renderFormFields:', this.model.get('data'))
-        var data = this.model.get('data');
-        var output = '';
-        if(data){
-          for(var i=0; i<data.fields.length; i++){
-            var f = data.fields[i];
-            switch(f.type){
-              case 'textarea':
-                output += '<div class="form-group">' +
-                            '<textarea class="form-control" rows="3">' +
-
-                            '</textarea>' +
-                          '</div>';
-
-              break;
-            }
-          }
-        }
-        return output;
-      }
-  });*/
 
   Form.Edit = {};
   Form.Edit.Field = {};
@@ -292,11 +220,6 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
       },
       formSave: function(){
         var data = this.$el.parent().serializeJSON();
-        if(data.fields){
-          data.data = {};
-          data.data.fields = data.fields;
-          delete data.fields;
-        }
         this.model.set(data);
         this.model.save(); 
        // App.navigate('home');
@@ -314,13 +237,18 @@ module.exports = function (Form, App, Backbone, Marionette, $, _) {
     template: _.template( '<form>' +
                           '</form>'
     ),
-    initialize: function (form) {
+   /* initialize: function (form) {
+      console.log('init000', this.model);
       this.listenTo(this.model,'sync',this.showSuccess);
       // $.fn.editable.defaults.mode = 'inline';   
     },
     showSuccess: function(){
+      console.log('init000');
       this.firstCol.show(new Form.Edit.View({model: this.model}));
       //this.firstCol.show(new Form.Edit.View({collection: new Backbone.Collection(this.model.get('data').fields)}));
+    },*/
+    onBeforeShow: function() {
+      this.showChildView('firstCol', new Form.Edit.View({model: this.model}));
     },
     regions: {
       firstCol: "form"

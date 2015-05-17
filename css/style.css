@@ -33,3 +33,9 @@
 #wrapper.sidebar-nav-open{
   padding-left:200px;
 }
+.pagination .disabled span,
+.pagination .disabled span:hover,
+.pagination .disabled a,
+.pagination .disabled a:hover {
+  cursor: default;
+}

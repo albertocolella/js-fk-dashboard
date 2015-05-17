@@ -12,7 +12,8 @@
     "chart.js": "~1.0.1",
     "bootstrap": "~3.3.2",
     "jquery-serializejson": "~2.5.0",
-    "bootstrap-switch": "~3.3.2"
+    "bootstrap-switch": "~3.3.2",
+    "backbone.paginator": "~2.0.2"
   },
   "devDependencies": {
     "browserify": "^8.1.3",

@@ -6,6 +6,7 @@ require('bootstrap-switch');
 var Backbone = require('backbone');
 Backbone.$ = $;
 var Marionette = require('backbone.marionette');
+var PageableCollection = require("backbone.paginator");
 Marionette.$ = Backbone.$;
 window.jQuery = $;
 var _ = require('underscore');
@@ -33,8 +34,13 @@ App.getCurrentRoute = function(){
 };
 
 App.getApiUrl = function(){
-  return 'https://fk.patrizio.me/api';
-  // return 'http://localhost:8080/api/v1';
+  switch( window.location.hostname ){
+    case "localhost":
+    case "127.0.0.1":
+      return 'http://localhost/feedback/fk-server/api';    
+    default:
+      return 'https://fk.patrizio.me/api';
+  }
 };
 
 App.serializeForm = function(form){

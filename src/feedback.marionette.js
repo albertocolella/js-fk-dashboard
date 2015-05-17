@@ -7,22 +7,24 @@ module.exports = function (Feedback, App, Backbone, Marionette, $, _) {
     }
   });
 
-  Feedback.Collection = Backbone.Collection.extend({
+  Feedback.Collection = Backbone.PageableCollection.extend({
     model: Feedback.Feedback,
     url: function() {
       // return 'api/v1/feedbacks.json';
       return App.getApiUrl() + '/feedbacks'; //.json';
     },
     parse: function(response, options){
-      console.log('response:', response);
+      // console.log('response:', response);
       return response.feedbacks;        
     }, 
-    pagination : function(perPage, page) {
-       page = page-1;
-       var collection = this;
-       collection = _(collection.rest(perPage*page));
-       collection = _(collection.first(perPage));    
-       return collection.map( function(model) { return model.toJSON() } ); 
+    state: {
+      firstPage: 1,
+      currentPage: 1,
+      pageSize: 3
+    },
+    queryParams: {
+      currentPage: "page",
+      pageSize: "pageResults"
     }
   });
 
@@ -44,10 +46,29 @@ module.exports = function (Feedback, App, Backbone, Marionette, $, _) {
       template:  _.template('<table data-toggle="table" class="table table-striped table-bordered table-hover">' + 
                             '<thead><tr><th>URL</th><th>Data</th><th>Date</th></tr></thead>' +
                             '<tbody></tbody>' +
-                            '</table>'
+                            '</table>' +
+                            '<ul class="pagination">' +                              
+                            '</ul>'
       ),
       childView: Feedback.ItemView,
       childViewContainer: 'tbody',
+      onBeforeRender: function () {
+         console.log('FeedbackListview onbeforerender');
+      },
+      onShow: function(){
+        console.log('FeedbackListview onshow');
+        var pagingItems = '<li><a href="#">Prev</a></li>'+
+                          '<li><a href="#" class="active">1</a></li>'+
+                          '<li class="disabled"><span>...</span></li>'+
+                          '<li><a href="#">5</a></li>'+
+                          '<li><a href="#">Next</a></li>';
+        $('.pagination').append(pagingItems);
+      },
+      onRender: function(){
+        console.log('FeedbackListview onrender');
+        
+                              
+      }
   });
 
 
