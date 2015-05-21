@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="./build/bundle.css">
-
+    <script src="https://apis.google.com/js/client:platform.js" async defer></script>
   </head>
   <body>
     <nav class="navbar navbar-default" role="navigation">
@@ -18,6 +18,18 @@
       </div>
     </nav>
     <nav data-offset-top="120" class="sidebar sidebar-nav" role="navigation">
+      <span id="signinButton">
+        <span
+          class="g-signin"
+          data-callback="App.signinUser"
+          data-clientid="781153372544-0q67tf5l2a0j69q7ftc96sc64qcofak9.apps.googleusercontent.com"
+          data-cookiepolicy="single_host_origin"
+          data-requestvisibleactions="http://schema.org/AddAction"
+          data-theme="light"
+          data-scope="https://www.googleapis.com/auth/plus.login">
+        </span>
+      </span>
+          <!--,https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile ageRange,currentLocation,emails,gender,occupation">-->
       <ul class="nav nav-pills nav-stacked">
          <li><a href="#form/add">new form</a></li>
          <li><a href="#">dummy link</a></li>

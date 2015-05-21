@@ -43,6 +43,46 @@ App.getApiUrl = function(){
   }
 };
 
+App.signinUser = function(authResult){
+   if (authResult['status']['signed_in']) {
+    // Update the app to reflect a signed in user
+    // Hide the sign-in button now that the user is authorized, for example:
+    document.getElementById('signinButton').setAttribute('style', 'display: none');
+  } else {
+    // Update the app to reflect a signed out user
+    // Possible error values:
+    //   "user_signed_out" - User is signed-out
+    //   "access_denied" - User denied access to your app
+    //   "immediate_failed" - Could not automatically log in the user
+    console.log('Sign-in state: ' + authResult['error']);
+  }
+};
+
+App.disconnectUser = function(access_token) {
+  var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' +
+      access_token;
+
+  // Esecuzione di una richiesta GET asincrona.
+  $.ajax({
+    type: 'GET',
+    url: revokeUrl,
+    async: false,
+    contentType: "application/json",
+    dataType: 'jsonp',
+    success: function(nullResponse) {
+      // Esegui un'azione, l'utente è disconnesso
+      // La risposta è sempre indefinita.
+    },
+    error: function(e) {
+      // Gestione dell'errore
+      // console.log(e);
+      // Puoi indirizzare gli utenti alla disconnessione manuale in caso di esito negativo
+      // https://plus.google.com/apps
+    }
+  });
+}
+
+
 App.serializeForm = function(form){
   var o = {};
   var a = form.serializeArray();
